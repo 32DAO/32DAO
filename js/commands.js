@@ -111,6 +111,7 @@ const banner = [
 '<span class="dao">     ╚═══██╗██╔═══╝ ██║  ██║██╔══██║██║   ██║   ██║     ██║   ██║██║╚██╔╝██║</span>',
 '<span class="dao">    ██████╔╝███████╗██████╔╝██║  ██║╚██████╔╝██╗╚██████╗╚██████╔╝██║ ╚═╝ ██║</span>',
 '<span class="dao">    ╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝</span>',
-  '<span class="color2">Welcome to the interactive web terminal.</span>',
-  "<span class=\"color2\">For a list of available commands, type</span> <span class=\"command\">'help'</span><span class=\"color2\">.</span>",
+'<span class="color2">Welcome to the interactive web terminal.</span>',
+"<span class=\"color2\">For a list of available commands, type</span> <span class=\"command\">'help'</span><span class=\"color2\">.</span>",
+"<br>"
 ];
