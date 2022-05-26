@@ -1,14 +1,14 @@
 const youtube = "https://www.youtube.com/32DAO/";
-const twitter = "https://www.twitter.com/32DAO/";
-const password = "32DAO";
+const twitter = "https://www.twitter.com/32_DAO/";
 const instagram = "https://www.instagram.com/32DAO/";
 const github = "https://github.com/32DAO/";
 const email = 'mailto:32DAO@protonmail.com';
+const discord = 'https://discord.gg/DwWHGddwbZ'
 
 const whois = [
   "<br>",
-  "Welcome Degen, We are 32 ETH",
-  "We are a group of developers and traders. We are in it for the tech bro.",
+  "Welcome Degen, We are 32 DAO",
+  "We don't care about Alpha, We are only in it for the tech bro!",
   "<br>"
 ];
 
@@ -93,13 +93,14 @@ const help = [
   "<br>",
   '<span class="command">whois</span>          Who is 32DAO',
   '<span class="command">account</span>        View your account',
-  '<span class="command">mint</span>           Mint a DAO token to get access to discord',
-  '<span class="command">video</span>          View YouTube videos',
-  '<span class="command">social</span>         Display social networks',
+  '<span class="command">mint</span>           Mint a DAO token to get access to Discord',
+  '<span class="command">discord</span>        Got a dao token? Join the Discord',
+  '<span class="command">twitter</span>        Follow us on Twitter',
+  '<span class="command">github</span>         Checkout the code on GitHub, unless you want to get rugged',
   '<span class="command">history</span>        View command history',
   '<span class="command">help</span>           You obviously already know what this does',
   '<span class="command">email</span>          Do not email us, we are not a real company',
-  '<span class="command">gpg</span>            If you must email us, use this',
+  '<span class="command">gpg</span>            If you must email us, use our gpg key',
   '<span class="command">clear</span>          Clear terminal',
   '<span class="command">banner</span>         Display the header',
   "<br>",
