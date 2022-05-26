@@ -85,6 +85,9 @@ async function commander(cmd) {
     case "whois":
       loopLines(whois, "color2 margin", 80);
       break;
+    case "mint":
+        loopLines(['you can ape in soon...'], "color2 margin", 80);
+        break;
     case "account":
       await viewAccount();
       break;
@@ -121,9 +124,9 @@ async function commander(cmd) {
       loopLines(banner, "", 80);
       break;
     // socials
-    case "youtube":
-      addLine("Opening YouTube...", "color2", 80);
-      newTab(youtube);
+    case "discord":
+      addLine("Opening Discord...", "color2", 80);
+      newTab(discord);
       break;
     case "twitter":
       addLine("Opening Twitter...", "color2", 0);
@@ -181,7 +184,7 @@ async function viewAccount() {
       `======================= Account ===========================`,
       `<span class="command">Address</span>         ${address}`,
       `<span class="command">Ξ1.235</span>          Ethereum Balance`,
-      `<span class="command">True</span>            Whitelisted`,
+      `<span class="command">False</span>           Whitelisted`,
       `<span class="command">False</span>           Minted DAO token`,
       `<span class="command">0</span>               Tokens owned`,
       `===========================================================`,
