@@ -77,13 +77,16 @@ function enterKey(e) {
   }
 }
 
-function commander(cmd) {
+async function commander(cmd) {
   switch (cmd.toLowerCase()) {
     case "help":
       loopLines(help, "color2 margin", 80);
       break;
     case "whois":
       loopLines(whois, "color2 margin", 80);
+      break;
+    case "account":
+      await viewAccount();
       break;
     case "video":
       addLine("Opening YouTube...", "color2", 80);
@@ -167,4 +170,26 @@ function loopLines(name, style, time) {
   name.forEach(function(item, index) {
     addLine(item, style, index * time);
   });
+}
+
+async function viewAccount() {
+  if (window.ethereum !== "undefined") {
+     // loopLines(["connecting....."], "color2 margin", 80);
+     address = await window.ethereum.enable()
+     loopLines([
+       `<br/>`,
+      `======================= Account ===========================`,
+      `<span class="command">Address</span>         ${address}`,
+      `<span class="command">Ξ1.235</span>          Ethereum Balance`,
+      `<span class="command">True</span>            Whitelisted`,
+      `<span class="command">False</span>           Minted DAO token`,
+      `<span class="command">0</span>               Tokens owned`,
+      `===========================================================`,
+      `<br/>`
+     ], "color2 margin", 80);
+     console.log('address', address)
+  } else {
+      console.log("No ethereum found")
+      loopLines(["Metamask not found"], "color2 margin", 80);
+  }
 }

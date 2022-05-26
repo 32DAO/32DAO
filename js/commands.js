@@ -92,6 +92,7 @@ const projects = [
 const help = [
   "<br>",
   '<span class="command">whois</span>          Who is 32DAO',
+  '<span class="command">account</span>        View your account',
   '<span class="command">mint</span>           Mint a DAO token to get access to discord',
   '<span class="command">video</span>          View YouTube videos',
   '<span class="command">social</span>         Display social networks',
