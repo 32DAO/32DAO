@@ -1,15 +1,21 @@
 var before = document.getElementById("before");
 var liner = document.getElementById("liner");
-var command = document.getElementById("typer"); 
-var textarea = document.getElementById("texter"); 
+var command = document.getElementById("typer");
+var textarea = document.getElementById("texter");
 var terminal = document.getElementById("terminal");
+
+const nft_address = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
 
 var git = 0;
 var pw = false;
 let pwd = false;
 var commands = [];
+let provider;
+let signer;
+let nft;
+let price;
 
-setTimeout(function() {
+setTimeout(function () {
   loopLines(banner, "", 80);
   textarea.focus();
 }, 100);
@@ -86,10 +92,13 @@ async function commander(cmd) {
       loopLines(whois, "color2 margin", 80);
       break;
     case "mint":
-        loopLines(['you can ape in soon...'], "color2 margin", 80);
-        break;
+      loopLines(["you can ape in soon..."], "color2 margin", 80);
+      break;
     case "account":
       await viewAccount();
+      break;
+    case "nft":
+      await viewNFT();
       break;
     case "video":
       addLine("Opening YouTube...", "color2", 80);
@@ -99,8 +108,8 @@ async function commander(cmd) {
       loopLines(social, "color2 margin", 80);
       break;
     case "gpg":
-        loopLines(gpg, "color2 margin", 80);
-        break;
+      loopLines(gpg, "color2 margin", 80);
+      break;
     case "secret":
       liner.classList.add("password");
       pw = true;
@@ -111,11 +120,15 @@ async function commander(cmd) {
       addLine("<br>", "command", 80 * commands.length + 50);
       break;
     case "email":
-      addLine('Opening mailto:<a href="mailto:forrest@fkcodes.com">forrest@fkcodes.com</a>...', "color2", 80);
+      addLine(
+        'Opening mailto:<a href="mailto:forrest@fkcodes.com">forrest@fkcodes.com</a>...',
+        "color2",
+        80
+      );
       newTab(email);
       break;
     case "clear":
-      setTimeout(function() {
+      setTimeout(function () {
         terminal.innerHTML = '<a id="before"></a>';
         before = document.getElementById("before");
       }, 1);
@@ -137,13 +150,17 @@ async function commander(cmd) {
       newTab(github);
       break;
     default:
-      addLine("<span class=\"inherit\">Command not found. For a list of commands, type <span class=\"command\">'help'</span>.</span>", "error", 100);
+      addLine(
+        '<span class="inherit">Command not found. For a list of commands, type <span class="command">\'help\'</span>.</span>',
+        "error",
+        100
+      );
       break;
   }
 }
 
 function newTab(link) {
-  setTimeout(function() {
+  setTimeout(function () {
     window.open(link, "_blank");
   }, 500);
 }
@@ -158,7 +175,7 @@ function addLine(text, style, time) {
       t += text.charAt(i);
     }
   }
-  setTimeout(function() {
+  setTimeout(function () {
     var next = document.createElement("p");
     next.innerHTML = t;
     next.className = style;
@@ -170,29 +187,79 @@ function addLine(text, style, time) {
 }
 
 function loopLines(name, style, time) {
-  name.forEach(function(item, index) {
+  name.forEach(function (item, index) {
     addLine(item, style, index * time);
   });
 }
 
 async function viewAccount() {
   if (window.ethereum !== "undefined") {
-     // loopLines(["connecting....."], "color2 margin", 80);
-     address = await window.ethereum.enable()
-     loopLines([
-       `<br/>`,
-      `======================= Account ===========================`,
-      `<span class="command">Address</span>         ${address}`,
-      `<span class="command">Ξ1.235</span>          Ethereum Balance`,
-      `<span class="command">False</span>           Whitelisted`,
-      `<span class="command">False</span>           Minted DAO token`,
-      `<span class="command">0</span>               Tokens owned`,
-      `===========================================================`,
-      `<br/>`
-     ], "color2 margin", 80);
-     console.log('address', address)
+    // loopLines(["connecting....."], "color2 margin", 80);
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+
+    const nft = new ethers.Contract(nft_address, abi, signer);
+    console.log("nft address: ", nft.address)
+
+    const bal = (ethers.utils.formatEther(await provider.getBalance(address)))
+      .toString()
+      .split(".")
+    console.log(bal)
+    const balance = bal[0] + "." + bal[1].substring(0, 4);
+
+    loopLines(
+      [
+        `<br/>`,
+        `======================= Account ===========================`,
+        `<span class="command">Address</span>         ${address}`,
+        `<span class="command">Ξ${balance}</span>         Ethereum Balance`,
+        `<span class="command">False</span>           Whitelisted`,
+        `<span class="command">False</span>           Minted DAO token`,
+        `<span class="command">0</span>               Tokens owned`,
+        `===========================================================`,
+        `<br/>`,
+      ],
+      "color2 margin",
+      80
+    );
+    console.log("address", address);
   } else {
-      console.log("No ethereum found")
-      loopLines(["Metamask not found"], "color2 margin", 80);
+    console.log("No ethereum found");
+    loopLines(["Metamask not found"], "color2 margin", 80);
+  }
+}
+
+async function viewNFT() {
+  if (window.ethereum !== "undefined") {
+
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    const address = await signer.getAddress();
+
+    nft = new ethers.Contract(nft_address, abi, signer);
+    console.log("nft address: ", nft.address)
+    price = ethers.utils.formatEther((await nft.PRICE()).toString())
+    const minted = parseInt(ethers.utils.formatEther((await nft.tokenCount()).toString()))
+
+    loopLines(
+      [
+        `<br/>`,
+        `===================== Membership NFT =====================`,
+        `<span class="command">Address</span>         ${(await nft.address)}`,
+        `<span class="command">Ξ${price}</span>           NFT price per token`,
+        `<span class="command">420</span>             Max Tokens`,
+        `<span class="command">${minted}</span>               Minted Tokens`,
+        `===========================================================`,
+        `<br/>`,
+      ],
+      "color2 margin",
+      80
+    );
+    console.log("address", address);
+  } else {
+    console.log("No ethereum found");
+    loopLines(["Metamask not found"], "color2 margin", 80);
   }
 }
