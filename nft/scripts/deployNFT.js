@@ -1,11 +1,29 @@
-
+const Web3 = require("web3");
 const hre = require("hardhat");
 
-async function main() {
-  const MembershipToken = await hre.ethers.getContractFactory("MembershipToken");
-  const nft = await MembershipToken.deploy();
+const ethProvider = require("eth-provider");
+require("hardhat-ethernal");
 
-  await nft.deployed();
+async function main() {
+  const provider = new ethers.providers.Web3Provider(
+    new Web3(ethProvider())._provider
+  );
+  const signer = provider.getSigner();
+  const MembershipToken = await hre.ethers.getContractFactory(
+    "DAOMembership",
+    signer
+  );
+  const nft = await hre.upgrades.deployProxy(MembershipToken, {
+    initializer: "initialize",
+  });
+  // const nft = await MembershipToken.deploy();
+
+  // await nft.deployed();
+
+  await hre.ethernal.push({
+    name: "DAOMembership",
+    address: nft.address,
+  });
 
   console.log("NFT deployed to:", nft.address);
 }

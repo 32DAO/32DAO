@@ -11,7 +11,7 @@ contract MembershipToken is ERC721, ERC721Enumerable, Ownable {
 
     Counters.Counter private _tokenIdCounter;
     uint16 public MAX_MEMBERS = 420;
-    uint64 public PRICE = 420 * 10**15;
+    uint64 public PRICE = 420 * 10**14;
 
     constructor() ERC721("DAO Membership", "DAO") {}
 
@@ -34,7 +34,7 @@ contract MembershipToken is ERC721, ERC721Enumerable, Ownable {
         _safeMint(to, tokenId);
     }
 
-    function mint(address to) public payable {
+    function mint(address to) public payable returns (uint256) {
         require(msg.value == PRICE, "Minting price is incorrect");
         require(
             _tokenIdCounter.current() < MAX_MEMBERS,
@@ -43,6 +43,7 @@ contract MembershipToken is ERC721, ERC721Enumerable, Ownable {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _mint(to, tokenId);
+        return tokenId;
     }
 
     // The following functions are overrides required by Solidity.

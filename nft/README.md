@@ -13,3 +13,11 @@ npx hardhat node
 node scripts/sample-script.js
 npx hardhat help
 ```
+
+## Dev
+
+- start a local node with ethernal block explorer
+
+```
+ETHERNAL_EMAIL=your@email.com ETHERNAL_PASSWORD=yourpwd npx hardhat node
+```

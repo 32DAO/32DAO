@@ -4,7 +4,7 @@ var command = document.getElementById("typer");
 var textarea = document.getElementById("texter");
 var terminal = document.getElementById("terminal");
 
-const nft_address = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
+const nft_address = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
 
 var git = 0;
 var pw = false;
@@ -92,7 +92,7 @@ async function commander(cmd) {
       loopLines(whois, "color2 margin", 80);
       break;
     case "mint":
-      loopLines(["you can ape in soon..."], "color2 margin", 80);
+      await mintNFT();
       break;
     case "account":
       await viewAccount();
@@ -201,12 +201,13 @@ async function viewAccount() {
     const address = await signer.getAddress();
 
     const nft = new ethers.Contract(nft_address, abi, signer);
-    console.log("nft address: ", nft.address)
+    console.log("nft address: ", nft.address);
 
-    const bal = (ethers.utils.formatEther(await provider.getBalance(address)))
+    const bal = ethers.utils
+      .formatEther(await provider.getBalance(address))
       .toString()
-      .split(".")
-    console.log(bal)
+      .split(".");
+    console.log(bal);
     const balance = bal[0] + "." + bal[1].substring(0, 4);
 
     loopLines(
@@ -233,21 +234,20 @@ async function viewAccount() {
 
 async function viewNFT() {
   if (window.ethereum !== "undefined") {
-
     provider = new ethers.providers.Web3Provider(window.ethereum);
     signer = provider.getSigner();
     const address = await signer.getAddress();
 
     nft = new ethers.Contract(nft_address, abi, signer);
-    console.log("nft address: ", nft.address)
-    price = ethers.utils.formatEther((await nft.PRICE()).toString())
-    const minted = parseInt(ethers.utils.formatEther((await nft.tokenCount()).toString()))
+    console.log("nft address: ", nft.address);
+    price = ethers.utils.formatEther((await nft.PRICE()).toString());
+    const minted = parseInt((await nft.tokenCount()).toString());
 
     loopLines(
       [
         `<br/>`,
         `===================== Membership NFT =====================`,
-        `<span class="command">Address</span>         ${(await nft.address)}`,
+        `<span class="command">Address</span>         ${await nft.address}`,
         `<span class="command">Ξ${price}</span>           NFT price per token`,
         `<span class="command">420</span>             Max Tokens`,
         `<span class="command">${minted}</span>               Minted Tokens`,
@@ -258,6 +258,36 @@ async function viewNFT() {
       80
     );
     console.log("address", address);
+  } else {
+    console.log("No ethereum found");
+    loopLines(["Metamask not found"], "color2 margin", 80);
+  }
+}
+
+async function mintNFT() {
+  if (window.ethereum !== "undefined") {
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    const address = await signer.getAddress();
+
+    nft = new ethers.Contract(nft_address, abi, signer);
+    price = await nft.PRICE();
+    loopLines(
+      [
+        `Confirm to mint 1 Membership NFT for Ξ${ethers.utils.formatEther(
+          price.toString()
+        )}`,
+      ],
+      "color2 margin",
+      80
+    );
+    const minted = parseInt(await nft.tokenCount());
+    await nft.mint(address, { value: price });
+    loopLines(
+      [`Minting tokenId: ${minted} to: ${address}`],
+      "color2 margin",
+      80
+    );
   } else {
     console.log("No ethereum found");
     loopLines(["Metamask not found"], "color2 margin", 80);
