@@ -103,6 +103,7 @@ const help = [
   '<span class="command">account</span>        View your account',
   '<span class="command">nft</span>            View the NFT contract',
   '<span class="command">mint</span>           Mint a DAO token to get access to Discord',
+  '<span class="command">opensea</span>        View the NFT Collection on OpenSea',
   '<span class="command">discord</span>        Got a dao token? Join the Discord',
   '<span class="command">twitter</span>        Follow us on Twitter',
   '<span class="command">github</span>         Checkout the code on GitHub, unless you want to get rugged',

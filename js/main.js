@@ -1,28 +1,23 @@
-state = {
-  before: document.getElementById("before"),
-  command: document.getElementById("typer"),
-  textarea: document.getElementById("texter"),
-  terminal: document.getElementById("terminal"),
-  git: 0,
-  commands: [],
-  provider: null,
-  signer: null,
-  nft: null,
-  price: null,
-  nft_address: "0xC9a3B8CCDefee8cDcFa257cdb58cDee346f1EfEc",
-};
+let before = document.getElementById("before");
+let command = document.getElementById("typer");
+let textarea = document.getElementById("texter");
+let terminal = document.getElementById("terminal");
+let git = 0;
+let commands = [];
+let provider = null;
+let signer = null;
+let nft = null;
+let price = null;
+let nft_address = "0xC9a3B8CCDefee8cDcFa257cdb58cDee346f1EfEc";
 
 app = {
   connectWallet: async () => {
-    state.provider = new ethers.providers.Web3Provider(
-      window.ethereum,
-      "mainnet"
-    );
-    state.provider.send("eth_requestAccounts", []).then(() => {
-      state.provider.listAccounts().then(async (accounts) => {
-        state.signer = state.provider.getSigner(accounts[0]);
-        state.nft = new ethers.Contract(state.nft_address, abi, state.signer);
-        state.price = await state.nft.PRICE();
+    provider = new ethers.providers.Web3Provider(window.ethereum, "mainnet");
+    provider.send("eth_requestAccounts", []).then(() => {
+      provider.listAccounts().then(async (accounts) => {
+        signer = provider.getSigner(accounts[0]);
+        nft = new ethers.Contract(nft_address, abi, signer);
+        price = await nft.PRICE();
       });
     });
   },
@@ -31,30 +26,30 @@ app = {
       document.location.reload(true);
     } else {
       if (e.keyCode == 13) {
-        state.commands.push(command.innerHTML);
-        state.git = state.commands.length;
+        commands.push(command.innerHTML);
+        git = commands.length;
         app.addLine(
-          "guest@32DAO.com:~$ " + state.command.innerHTML,
+          "guest@32DAO.com:~$ " + command.innerHTML,
           "no-animation",
           0
         );
-        app.commander(state.command.innerHTML.toLowerCase());
-        state.command.innerHTML = "";
-        state.textarea.value = "";
+        app.commander(command.innerHTML.toLowerCase());
+        command.innerHTML = "";
+        textarea.value = "";
       }
-      if (e.keyCode == 38 && state.git != 0) {
-        state.git -= 1;
-        state.textarea.value = state.commands[state.git];
-        state.command.innerHTML = state.textarea.value;
+      if (e.keyCode == 38 && git != 0) {
+        git -= 1;
+        textarea.value = commands[git];
+        command.innerHTML = textarea.value;
       }
-      if (e.keyCode == 40 && state.git != state.commands.length) {
-        state.git += 1;
-        if (state.commands[state.git] === undefined) {
-          state.textarea.value = "";
+      if (e.keyCode == 40 && git != commands.length) {
+        git += 1;
+        if (commands[git] === undefined) {
+          textarea.value = "";
         } else {
-          state.textarea.value = state.commands[state.git];
+          textarea.value = commands[git];
         }
-        state.command.innerHTML = state.textarea.value;
+        command.innerHTML = textarea.value;
       }
     }
   },
@@ -75,6 +70,11 @@ app = {
       case "nft":
         await app.viewNFT();
         break;
+      case "opensea":
+        app.newTab(
+          `https://opensea.io/assets?search[query]=0xC9a3B8CCDefee8cDcFa257cdb58cDee346f1EfEc`
+        );
+        break;
       case "video":
         app.addLine("Opening YouTube...", "color2", 80);
         app.newTab(youtube);
@@ -87,8 +87,8 @@ app = {
         break;
       case "history":
         app.addLine("<br>", "", 0);
-        app.loopLines(state.commands, "color2", 80);
-        app.addLine("<br>", "command", 80 * state.commands.length + 50);
+        app.loopLines(commands, "color2", 80);
+        app.addLine("<br>", "command", 80 * commands.length + 50);
         break;
       case "email":
         app.addLine(
@@ -100,8 +100,8 @@ app = {
         break;
       case "clear":
         setTimeout(function () {
-          state.terminal.innerHTML = '<a id="before"></a>';
-          state.before = document.getElementById("before");
+          terminal.innerHTML = '<a id="before"></a>';
+          before = document.getElementById("before");
         }, 1);
         break;
       case "banner":
@@ -149,7 +149,7 @@ app = {
       next.innerHTML = t;
       next.className = style;
 
-      state.before.parentNode.insertBefore(next, before);
+      before.parentNode.insertBefore(next, before);
 
       window.scrollTo(0, document.body.offsetHeight);
     }, time);
@@ -163,24 +163,24 @@ app = {
     if (window.ethereum !== "undefined") {
       try {
         // app.loopLines(["connecting....."], "color2 margin", 80);
-        state.provider = new ethers.providers.Web3Provider(window.ethereum);
-        state.signer = state.provider.getSigner();
-        state.address = await state.signer.getAddress();
-        state.nft = new ethers.Contract(state.nft_address, abi, state.signer);
-        state.balance = await state.provider.getBalance(state.address);
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        address = await signer.getAddress();
+        nft = new ethers.Contract(nft_address, abi, signer);
+        balance = await provider.getBalance(address);
         const bal = ethers.utils
-          .formatEther(await state.provider.getBalance(state.address))
+          .formatEther(await provider.getBalance(address))
           .toString()
           .split(".");
         console.log(bal);
-        state.balance = bal[0] + "." + bal[1].substring(0, 4);
-        const tokensOwned = await state.nft.balanceOf(state.address);
+        balance = bal[0] + "." + bal[1].substring(0, 4);
+        const tokensOwned = await nft.balanceOf(address);
         app.loopLines(
           [
             `<br/>`,
             `======================= Account ===========================`,
-            `<span class="command">Address</span>         ${state.address}`,
-            `<span class="command">Ξ${state.balance}</span>         Ethereum Balance`,
+            `<span class="command">Address</span>         ${address}`,
+            `<span class="command">Ξ${balance}</span>         Ethereum Balance`,
             `<span class="command"> ${tokensOwned}</span>               DAO NFTs Owned`,
             `===========================================================`,
             `<br/>`,
@@ -198,22 +198,27 @@ app = {
   },
   viewNFT: async () => {
     if (window.ethereum !== "undefined") {
-      state.provider = new ethers.providers.Web3Provider(window.ethereum);
-      state.signer = state.provider.getSigner();
-      const address = await state.signer.getAddress();
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      const address = await signer.getAddress();
 
-      state.nft = new ethers.Contract(state.nft_address, abi, state.signer);
-      console.log("nft address: ", state.nft.address);
+      nft = new ethers.Contract(nft_address, abi, signer);
+      console.log("nft address: ", nft.address);
 
-      const minted = parseInt((await state.nft.totalSupply()).toString());
+      const minted = parseInt((await nft.totalSupply()).toString());
+
+      const pri = ethers.utils
+        .formatEther(await nft.PRICE())
+        .toString()
+        .split(".");
+      const nftPrice = pri[0] + "." + pri[1].substring(0, 3);
 
       app.loopLines(
         [
           `<br/>`,
           `===================== Membership NFT =====================`,
-          `<span class="command">Address</span>         ${await state.nft
-            .address}`,
-          `<span class="command">Ξ${state.price}</span>           NFT price per token`,
+          `<span class="command">Address</span>         ${await nft.address}`,
+          `<span class="command">Ξ${nftPrice}</span>          NFT price per token`,
           `<span class="command">420</span>             Max Tokens`,
           `<span class="command">${minted}</span>               Minted Tokens`,
           `===========================================================`,
@@ -230,30 +235,31 @@ app = {
   },
   mintNFT: async () => {
     if (window.ethereum !== "undefined") {
-      state.provider = new ethers.providers.Web3Provider(window.ethereum);
-      state.signer = state.provider.getSigner();
-      const address = await state.signer.getAddress();
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      const address = await signer.getAddress();
 
-      state.nft = new ethers.Contract(state.nft_address, abi, state.signer);
-      state.price = await state.nft.PRICE();
-      const userBalance = await state.provider.getBalance(address);
+      nft = new ethers.Contract(nft_address, abi, signer);
+      price = await nft.PRICE();
+      const userBalance = await provider.getBalance(address);
 
       const bal = ethers.utils.formatEther(userBalance).toString().split(".");
-      state.balance = bal[0] + "." + bal[1].substring(0, 3);
+      balance = bal[0] + "." + bal[1].substring(0, 3);
 
-      if (userBalance.gt(state.price)) {
+      if (userBalance.gt(price)) {
         app.loopLines(
           [
             `Confirm to mint 1 Membership NFT for Ξ${ethers.utils.formatEther(
-              state.price.toString()
+              price.toString()
             )}`,
           ],
           "color2 margin",
           80
         );
-        const minted = parseInt(await state.nft.totalSupply());
-        tx = await state.nft.mint({ value: state.price });
+        const minted = parseInt(await nft.totalSupply());
+        tx = await nft.mint({ value: price });
         app.loopLines([`Minting tokenId: ${minted} to: ${address}`]);
+        console.log(tx);
         Promise.resolve(tx.wait()).then(function (tx) {
           console.log("tx", tx);
           app.newTab(
@@ -262,13 +268,16 @@ app = {
           app.newTab(discord);
         });
       } else {
-        const pri = ethers.utils.formatEther(state.price).toString().split(".");
-        const price = pri[0] + "." + pri[1].substring(0, 3);
+        const pri = ethers.utils
+          .formatEther(await nft.PRICE())
+          .toString()
+          .split(".");
+        const nftPrice = pri[0] + "." + pri[1].substring(0, 3);
         app.loopLines([
           `<br/>`,
           `======================= NOT ENOUGH ETH ===========================`,
-          `<span class="command">Ξ${price}</span>         NFT Price`,
-          `<span class="command">Ξ${state.balance}</span>         Ethereum Balance`,
+          `<span class="command">Ξ${nftPrice}</span>         NFT Price`,
+          `<span class="command">Ξ${balance}</span>         Ethereum Balance`,
           `<br/>`,
         ]);
       }
@@ -280,12 +289,12 @@ app = {
 };
 
 window.addEventListener("keyup", app.enterKey);
-state.textarea.value = "";
-state.command.innerHTML = state.textarea.value;
+textarea.value = "";
+command.innerHTML = textarea.value;
 
 setTimeout(async () => {
   await app.connectWallet().then(() => {
     app.loopLines(banner, "", 80);
-    state.textarea.focus();
+    textarea.focus();
   });
 }, 100);
