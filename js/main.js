@@ -4,7 +4,7 @@ var command = document.getElementById("typer");
 var textarea = document.getElementById("texter");
 var terminal = document.getElementById("terminal");
 
-const nft_address = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
+const nft_address = "0xC9a3B8CCDefee8cDcFa257cdb58cDee346f1EfEc";
 
 var git = 0;
 var pw = false;
@@ -26,7 +26,7 @@ console.log(
   "%c31337 H4X0R",
   "color: #04ff00; font-weight: bold; font-size: 24px;"
 );
-console.log("%cLFG!: '" + "' - I wonder what it does?🤔", "color: grey");
+console.log("%cLFG!: '", "color: grey");
 
 //init
 textarea.value = "";
@@ -121,7 +121,7 @@ async function commander(cmd) {
       break;
     case "email":
       addLine(
-        'Opening mailto:<a href="mailto:forrest@fkcodes.com">forrest@fkcodes.com</a>...',
+        'Opening mailto:<a href="mailto:32DAO@protonmail.com">32DAO@protonmail.com</a>...',
         "color2",
         80
       );
@@ -241,7 +241,7 @@ async function viewNFT() {
     nft = new ethers.Contract(nft_address, abi, signer);
     console.log("nft address: ", nft.address);
     price = ethers.utils.formatEther((await nft.PRICE()).toString());
-    const minted = parseInt((await nft.tokenCount()).toString());
+    const minted = parseInt((await nft.totalSupply()).toString());
 
     loopLines(
       [
@@ -281,13 +281,16 @@ async function mintNFT() {
       "color2 margin",
       80
     );
-    const minted = parseInt(await nft.tokenCount());
-    await nft.mint(address, { value: price });
-    loopLines(
-      [`Minting tokenId: ${minted} to: ${address}`],
-      "color2 margin",
-      80
-    );
+    const minted = parseInt(await nft.totalSupply());
+    tx = await nft.mint({ value: price });
+    loopLines([`Minting tokenId: ${minted} to: ${address}`]);
+    Promise.resolve(tx.wait()).then(function (tx) {
+      console.log("tx", tx);
+      newTab(
+        `https://opensea.io/assets/ethereum/0xC9a3B8CCDefee8cDcFa257cdb58cDee346f1EfEc/${minted}`
+      );
+      newTab(discord);
+    });
   } else {
     console.log("No ethereum found");
     loopLines(["Metamask not found"], "color2 margin", 80);

@@ -116,12 +116,12 @@ const help = [
 ];
 
 const banner = [
-  '<span class="dao">    ██████╗ ██████╗ ██████╗  █████╗  ██████╗     ██████╗ ██████╗ ███╗   ███╗</span>',
-  '<span class="dao">    ╚════██╗╚════██╗██╔══██╗██╔══██╗██╔═══██╗   ██╔════╝██╔═══██╗████╗ ████║</span>',
-  '<span class="dao">     █████╔╝ █████╔╝██║  ██║███████║██║   ██║   ██║     ██║   ██║██╔████╔██║</span>',
-  '<span class="dao">     ╚═══██╗██╔═══╝ ██║  ██║██╔══██║██║   ██║   ██║     ██║   ██║██║╚██╔╝██║</span>',
-  '<span class="dao">    ██████╔╝███████╗██████╔╝██║  ██║╚██████╔╝██╗╚██████╗╚██████╔╝██║ ╚═╝ ██║</span>',
-  '<span class="dao">    ╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝</span>',
+  '<span class="dao">███████╗ ██████╗ ██████╗ ████████╗██╗  ██╗███████╗   ████████╗███████╗ ██████╗██╗  ██╗</span>',
+  '<span class="dao">██╔════╝██╔═══██╗██╔══██╗╚══██╔══╝██║  ██║██╔════╝   ╚══██╔══╝██╔════╝██╔════╝██║  ██║</span>',
+  '<span class="dao">█████╗  ██║   ██║██████╔╝   ██║   ███████║█████╗        ██║   █████╗  ██║     ███████║</span>',
+  '<span class="dao">██╔══╝  ██║   ██║██╔══██╗   ██║   ██╔══██║██╔══╝        ██║   ██╔══╝  ██║     ██╔══██║</span>',
+  '<span class="dao">██║     ╚██████╔╝██║  ██║   ██║   ██║  ██║███████╗██╗   ██║   ███████╗╚██████╗██║  ██║</span>',
+  '<span class="dao">╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝   ╚═╝   ╚══════╝ ╚═════╝╚═╝  ╚═╝</span>',
   '<span class="color2">Welcome to the interactive web terminal.</span>',
   '<span class="color2">For a list of available commands, type</span> <span class="command">\'help\'</span><span class="color2">.</span>',
   "<br>",
@@ -132,6 +132,25 @@ const abi = [
     inputs: [],
     stateMutability: "nonpayable",
     type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "previousAdmin",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newAdmin",
+        type: "address",
+      },
+    ],
+    name: "AdminChanged",
+    type: "event",
   },
   {
     anonymous: false,
@@ -189,6 +208,45 @@ const abi = [
       {
         indexed: true,
         internalType: "address",
+        name: "beacon",
+        type: "address",
+      },
+    ],
+    name: "BeaconUpgraded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newDAO",
+        type: "address",
+      },
+    ],
+    name: "DAOChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "version",
+        type: "uint8",
+      },
+    ],
+    name: "Initialized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "previousOwner",
         type: "address",
       },
@@ -200,6 +258,19 @@ const abi = [
       },
     ],
     name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "Rug",
     type: "event",
   },
   {
@@ -226,6 +297,32 @@ const abi = [
     ],
     name: "Transfer",
     type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "implementation",
+        type: "address",
+      },
+    ],
+    name: "Upgraded",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "DAO",
+    outputs: [
+      {
+        internalType: "address payable",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
@@ -310,6 +407,13 @@ const abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -334,13 +438,7 @@ const abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-    ],
+    inputs: [],
     name: "mint",
     outputs: [
       {
@@ -399,7 +497,27 @@ const abi = [
   },
   {
     inputs: [],
+    name: "proxiableUUID",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "rug",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -489,6 +607,19 @@ const abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "newDAO",
+        type: "address",
+      },
+    ],
+    name: "setDAO",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes4",
         name: "interfaceId",
         type: "bytes4",
@@ -527,19 +658,6 @@ const abi = [
       },
     ],
     name: "tokenByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "tokenCount",
     outputs: [
       {
         internalType: "uint256",
@@ -641,5 +759,40 @@ const abi = [
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newImplementation",
+        type: "address",
+      },
+    ],
+    name: "upgradeTo",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newImplementation",
+        type: "address",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "upgradeToAndCall",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    stateMutability: "payable",
+    type: "receive",
   },
 ];
